@@ -496,17 +496,25 @@ async function ai(prompt, maxTok){
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':'YOUR_API_KEY','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:maxTok,
         messages:[{role:'user',content:prompt}]
       })
     });
+    if(!res.ok){
+      var errBody;
+      try{ errBody=await res.json(); } catch(_){ errBody=null; }
+      var errMsg=(errBody&&errBody.error&&errBody.error.message)||('HTTP '+res.status+': '+res.statusText);
+      console.error('AI API error:',res.status,errMsg);
+      return '\u26A0\uFE0F Error del servidor IA ('+res.status+'): '+errMsg;
+    }
     var d=await res.json();
     if(d.error) return '\u26A0\uFE0F Error: '+d.error.message;
     return (d.content||[]).map(function(b){return b.text||'';}).join('');
   } catch(e){
+    console.error('AI fetch error:',e);
     return '\u26A0\uFE0F Error de conexi\u00F3n: '+e.message;
   }
 }
@@ -537,7 +545,10 @@ async function doScan(){
     var clean=txt.replace(/\u0060\u0060\u0060json|\u0060\u0060\u0060/g,'').trim();
     var data=JSON.parse(clean);
     renderRadar(data);
-  } catch(e){ renderRadarFallback(txt); }
+  } catch(e){
+    console.warn('Radar JSON parse failed, showing raw response:',e.message);
+    renderRadarFallback(txt);
+  }
 }
 
 function renderRadar(data){
@@ -652,7 +663,10 @@ async function doAnalysis(){
     renderVideos(data.videos||[]);
     renderSol(data);
   } catch(e){
-    var fb='<div class="nb glass sec"><div class="sec-title">&#128202; Resultado</div><p style="font-size:13px;color:var(--g);line-height:1.65;white-space:pre-wrap;">'+esc(txt)+'</p></div>';
+    console.warn('Analysis JSON parse failed, showing raw response:',e.message);
+    var fb='<div class="nb glass sec"><div class="sec-title">&#128202; Resultado</div>'+
+      '<p style="font-size:12px;color:#FF2EFB;margin-bottom:8px;font-weight:700;">\u26A0\uFE0F No se pudo interpretar la respuesta como datos estructurados. Mostrando respuesta original:</p>'+
+      '<p style="font-size:13px;color:var(--g);line-height:1.65;white-space:pre-wrap;">'+esc(txt)+'</p></div>';
     document.getElementById('analOut').innerHTML=fb;
     document.getElementById('vidOut').innerHTML='';
     document.getElementById('solOut').innerHTML='';
