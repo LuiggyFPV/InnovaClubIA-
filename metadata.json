@@ -1,0 +1,6 @@
+{
+  "name": "InnovaClubAI",
+  "description": "Plataforma integral de análisis estratégico con inteligencia artificial, radar geográfico y postulación de proyectos para el Innovatorio de Innovaclub.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
