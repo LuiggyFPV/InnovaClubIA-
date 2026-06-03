@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>InnovaClubAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* === VARIABLES === */
+:root{
+  --p:#9D00FF; --k:#FF2EFB; --b:#2E8BFF;
+  --bg:#000; --bg2:#0d0d1a; --bg3:#111122;
+  --w:#fff; --g:#e0e0e0;
+}
+/* === RESET === */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--w);font-family:"Nunito",sans-serif;min-height:100vh;overflow-x:hidden;}
+body{padding-top:66px;padding-bottom:76px;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:#111;}
+::-webkit-scrollbar-thumb{background:var(--p);border-radius:2px;}
+
+/* === KEYFRAMES === */
+@keyframes borderRun{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes ping{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.1);opacity:0}}
+
+/* === NEON BORDER MIXIN === */
+.nb{position:relative;border-radius:16px;}
+.nb::before{
+  content:"";position:absolute;inset:0;border-radius:16px;padding:2px;
+  background:linear-gradient(90deg,var(--p),var(--k),var(--b),var(--p));
+  background-size:300% 300%;animation:borderRun 3s linear infinite;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:0;
+}
+
+/* === GLASS === */
+.glass{
+  background:rgba(13,13,30,.75);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+
+/* === TOP BAR === */
+#topBar{
+  position:fixed;top:0;left:0;right:0;z-index:999;height:66px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(157,0,255,.4);
+}
+.tb-left{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--b);font-variant-numeric:tabular-nums;}
+.tb-icons{display:flex;gap:5px;align-items:center;}
+.tb-logo{height:44px;width:auto;object-fit:contain;}
+.tb-gear{background:none;border:none;cursor:pointer;font-size:19px;color:rgba(255,255,255,.55);padding:4px;}
+
+/* === BOTTOM NAV === */
+#botNav{
+  position:fixed;bottom:0;left:0;right:0;z-index:999;height:68px;
+  display:flex;align-items:center;justify-content:space-around;
+  background:rgba(0,0,0,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(157,0,255,.4);
+}
+.ni{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;padding:6px 10px;border-radius:10px;
+  transition:all .25s;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.ni .ico{font-size:20px;transition:all .25s;}
+.ni:hover,.ni.on{color:var(--k);text-shadow:0 0 8px var(--k);}
+.ni:hover .ico,.ni.on .ico{transform:scale(1.15);}
+
+/* === MAIN CONTAINER === */
+.wrap{max-width:480px;margin:0 auto;padding:14px;}
+
+/* === HERO === */
+.hero{text-align:center;padding:20px 12px 10px;}
+.hero-ring{
+  width:170px;height:170px;margin:0 auto 10px;border-radius:50%;
+  border:2px solid rgba(157,0,255,.45);
+  display:flex;align-items:center;justify-content:center;
+  animation:float 4s ease-in-out infinite;overflow:visible;
+  box-shadow:0 0 18px rgba(157,0,255,.15),0 0 36px rgba(255,46,251,.07);
+}
+.hero-ring img{width:158px;height:158px;object-fit:contain;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-top:4px;}
+
+/* === SECTION CARD === */
+.sec{margin-bottom:18px;padding:18px;animation:fadeUp .4s ease;}
+.sec-title{
+  font-size:12px;font-weight:900;color:var(--p);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--p),transparent);}
+
+/* === INPUTS === */
+.grp{margin-bottom:12px;}
+.lbl{display:block;font-size:11px;font-weight:800;color:var(--b);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;}
+.inp,.sel,.ta{
+  width:100%;background:rgba(0,0,0,.55);border:1px solid rgba(157,0,255,.35);
+  border-radius:10px;color:var(--w);font-family:"Nunito",sans-serif;font-size:14px;
+  padding:10px 13px;outline:none;transition:border .25s,box-shadow .25s;
+  -webkit-appearance:none;
+}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--p);box-shadow:0 0 0 2px rgba(157,0,255,.18),0 0 10px rgba(157,0,255,.25);}
+.ta{resize:vertical;min-height:96px;line-height:1.55;}
+.sel option{background:#111;}
+
+/* === UPLOAD === */
+.upl{
+  border:2px dashed rgba(157,0,255,.4);border-radius:12px;
+  padding:18px;text-align:center;cursor:pointer;transition:all .25s;
+  background:transparent;
+}
+.upl:hover{border-color:var(--k);background:rgba(255,46,251,.04);}
+.upl-ico{font-size:26px;margin-bottom:4px;}
+.upl-txt{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;}
+
+/* === BUTTONS === */
+.btn{
+  width:100%;padding:13px;cursor:pointer;border-radius:12px;
+  font-family:"Nunito",sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;
+  background:transparent;color:var(--w);text-transform:uppercase;
+  transition:all .28s;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn.nb::before{border-radius:12px;}
+.btn:hover{background:rgba(157,0,255,.09);transform:scale(1.015);}
+.btn:hover{box-shadow:0 0 20px rgba(157,0,255,.35);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+.btn img{height:26px;width:auto;object-fit:contain;flex-shrink:0;}
+
+.btn2{
+  padding:8px 15px;cursor:pointer;border-radius:8px;
+  font-family:"Nunito",sans-serif;font-size:12px;font-weight:800;
+  background:transparent;border:1px solid var(--b);color:var(--b);
+  transition:all .25s;letter-spacing:.8px;
+  box-shadow:0 0 6px rgba(46,139,255,.2);
+}
+.btn2:hover{border-color:var(--k);color:var(--k);box-shadow:0 0 14px rgba(255,46,251,.35);}
+
+/* === RADAR === */
+.radar-wrap{width:200px;height:200px;margin:0 auto;}
+.radar-wrap svg{width:100%;height:100%;}
+.rsweep{transform-origin:center;animation:spin 3s linear infinite;will-change:transform;}
+.rctrl{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+.rbtn{
+  padding:6px 11px;border-radius:20px;font-size:11px;font-weight:800;
+  cursor:pointer;border:1px solid rgba(46,139,255,.35);
+  background:rgba(46,139,255,.06);color:var(--b);transition:all .25s;font-family:"Nunito",sans-serif;
+}
+.rbtn.on,.rbtn:hover{background:rgba(157,0,255,.18);border-color:var(--p);color:var(--p);box-shadow:0 0 8px rgba(157,0,255,.25);}
+
+/* === SWOT === */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:2px;}
+.swot-card{padding:12px;border-radius:12px;}
+.sw-F{background:rgba(157,0,255,.1);border:1px solid rgba(157,0,255,.28);}
+.sw-D{background:rgba(255,46,251,.07);border:1px solid rgba(255,46,251,.22);}
+.sw-O{background:rgba(46,139,255,.07);border:1px solid rgba(46,139,255,.22);}
+.sw-A{background:rgba(255,100,50,.07);border:1px solid rgba(255,100,50,.22);}
+.sw-lbl{font-size:10px;font-weight:900;letter-spacing:1.5px;margin-bottom:7px;text-transform:uppercase;}
+.sw-F .sw-lbl{color:var(--p)}.sw-D .sw-lbl{color:var(--k)}.sw-O .sw-lbl{color:var(--b)}.sw-A .sw-lbl{color:#ff6432;}
+.sw-li{font-size:11px;color:rgba(255,255,255,.72);margin-bottom:3px;display:flex;gap:5px;line-height:1.45;}
+.sw-li::before{content:"▸";opacity:.55;flex-shrink:0;}
+
+/* === METRIC ROW === */
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.mlbl{font-size:12px;color:rgba(255,255,255,.48);}
+.mval{font-size:12px;font-weight:900;}
+.mbar{height:3px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:3px;overflow:hidden;width:110px;}
+.mfill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--k));transition:width 1.2s ease;}
+
+/* === VIDEO CARD === */
+.vcard{padding:15px;margin-bottom:11px;border-radius:14px;border:1px solid rgba(46,139,255,.28);background:rgba(8,8,24,.85);}
+.vnum{font-size:10px;color:var(--b);font-weight:900;letter-spacing:2px;margin-bottom:7px;text-transform:uppercase;}
+.vtl{display:flex;flex-direction:column;gap:9px;}
+.vrow{display:flex;gap:10px;}
+.vtime{font-size:11px;color:var(--p);font-weight:800;white-space:nowrap;padding-top:2px;min-width:38px;}
+.vtxt{font-size:12px;color:rgba(255,255,255,.78);line-height:1.5;}
+.vtxt em{color:var(--k);}
+
+/* === STEP === */
+.step{display:flex;gap:11px;padding:11px;margin-bottom:7px;border-radius:12px;background:rgba(13,13,26,.85);border:1px solid rgba(157,0,255,.13);}
+.snum{width:27px;height:27px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--k));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;}
+.stxt h4{font-size:13px;font-weight:800;color:var(--w);margin-bottom:2px;}
+.stxt p{font-size:12px;color:rgba(255,255,255,.52);line-height:1.5;}
+
+/* === BADGE === */
+.badge{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:28px;font-size:12px;font-weight:900;letter-spacing:.8px;margin:10px 0;}
+.badge-I{background:rgba(255,200,0,.09);border:1px solid rgba(255,200,0,.38);color:#ffd700;}
+.badge-P{background:rgba(46,139,255,.09);border:1px solid rgba(46,139,255,.38);color:var(--b);}
+.badge-E{background:rgba(157,0,255,.09);border:1px solid rgba(157,0,255,.38);color:var(--p);}
+
+/* === INFO BOX === */
+.ibox{padding:12px;border-radius:10px;margin-bottom:8px;}
+.ibox-p{background:rgba(157,0,255,.09);border:1px solid rgba(157,0,255,.22);}
+.ibox-b{background:rgba(46,139,255,.07);border:1px solid rgba(46,139,255,.2);}
+.ibox-k{background:rgba(255,46,251,.07);border:1px solid rgba(255,46,251,.2);}
+.ibox .ilbl{font-size:10px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;}
+.ibox-p .ilbl{color:var(--p)}.ibox-b .ilbl{color:var(--b)}.ibox-k .ilbl{color:var(--k);}
+.ibox p{font-size:13px;color:var(--w);line-height:1.5;}
+
+/* === TABLE === */
+.ctbl{width:100%;border-collapse:collapse;font-size:12px;}
+.ctbl th{font-size:10px;color:var(--b);padding:7px 5px;text-align:left;border-bottom:1px solid rgba(46,139,255,.2);font-weight:900;letter-spacing:.8px;text-transform:uppercase;}
+.ctbl td{padding:8px 5px;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.72);}
+.ctbl tr:hover td{background:rgba(157,0,255,.04);}
+
+/* === TAG === */
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px;font-weight:700;}
+.tag-p{background:rgba(157,0,255,.18);color:var(--p);border:1px solid rgba(157,0,255,.28);}
+.tag-b{background:rgba(46,139,255,.13);color:var(--b);border:1px solid rgba(46,139,255,.25);}
+.tag-k{background:rgba(255,46,251,.1);color:var(--k);border:1px solid rgba(255,46,251,.25);}
+
+/* === LOADING === */
+.ldg{text-align:center;padding:28px 16px;}
+.lring{width:52px;height:52px;margin:0 auto 14px;border:3px solid rgba(157,0,255,.18);border-top-color:var(--p);border-right-color:var(--k);border-radius:50%;animation:spin .75s linear infinite;}
+.ltxt{font-size:12px;color:var(--b);font-weight:700;animation:blink 1.4s ease-in-out infinite;}
+
+/* === PLACEHOLDER === */
+.ph{text-align:center;padding:28px 16px;opacity:.45;}
+.ph .phi{font-size:42px;margin-bottom:10px;}
+.ph p{font-size:12px;color:var(--b);font-weight:700;}
+
+/* === RESULT LINK === */
+.rlink{
+  display:block;margin-top:9px;text-align:center;padding:8px;border-radius:8px;
+  background:rgba(46,139,255,.08);border:1px solid rgba(46,139,255,.28);
+  color:var(--b);font-size:11px;text-decoration:none;font-weight:800;
+}
+.rlink:hover{background:rgba(46,139,255,.16);border-color:var(--b);}
+
+/* === SETTINGS MODAL === */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal-box{
+  width:100%;max-width:400px;padding:24px;border-radius:18px;
+  background:var(--bg2);border:1px solid rgba(157,0,255,.35);
+  animation:fadeUp .3s ease;
+}
+.modal-box h3{font-size:14px;font-weight:900;color:var(--p);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.modal-close{
+  float:right;background:none;border:none;color:rgba(255,255,255,.5);
+  font-size:22px;cursor:pointer;margin-top:-4px;
+}
+.modal-close:hover{color:var(--k);}
+
+/* === PROGRESS BAR === */
+.prog-bar{width:100%;height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;margin:8px 0;}
+.prog-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.prog-fill.green{background:linear-gradient(90deg,#00c853,#69f0ae);}
+.prog-fill.yellow{background:linear-gradient(90deg,#ffd600,#ffff00);}
+.prog-fill.red{background:linear-gradient(90deg,#ff1744,#ff5252);}
+
+/* === EVALUATION PARAM === */
+.eval-param{padding:10px;margin-bottom:8px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(157,0,255,.12);}
+.eval-param .ep-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.eval-param .ep-name{font-size:11px;font-weight:800;color:var(--b);}
+.eval-param .ep-score{font-size:12px;font-weight:900;color:var(--p);}
+.eval-param .ep-comment{font-size:11px;color:rgba(255,255,255,.55);line-height:1.45;}
+</style>
+</head>
+<body>
+
+<!-- =========== TOP BAR =========== -->
+<div id="topBar">
+  <div class="tb-left">
+    <span id="clk">9:16</span>
+    <div class="tb-icons">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E8BFF" stroke-width="2.2">
+        <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+      </svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2E8BFF" stroke-width="2.2">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <circle cx="12" cy="20" r="1" fill="#2E8BFF"/>
+      </svg>
+      <svg width="18" height="12" viewBox="0 0 24 12" fill="none" stroke="#2E8BFF" stroke-width="2">
+        <rect x="1" y="1" width="20" height="10" rx="2"/>
+        <rect x="21" y="3.5" width="2" height="5" rx="1" fill="#2E8BFF"/>
+        <rect x="2" y="2" width="14" height="8" rx="1" fill="#2E8BFF"/>
+      </svg>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <span style="font-size:15px;font-weight:900;color:var(--w);letter-spacing:1px;">Innova<span style="color:var(--k);">Club</span><span style="color:var(--b);">AI</span></span>
+  </div>
+  <button class="tb-gear" onclick="openSettings()">&#9881;</button>
+</div>
+
+<!-- =========== SETTINGS MODAL =========== -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSettings()">&times;</button>
+    <h3>&#9881; Configuraci&#243;n</h3>
+    <div class="grp">
+      <label class="lbl" for="apiKeyInput">Gemini API Key</label>
+      <input id="apiKeyInput" class="inp" type="password" placeholder="Ingresa tu clave de API de Gemini">
+    </div>
+    <p style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;line-height:1.5;">
+      Obt&#233;n tu API Key en <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--b);">Google AI Studio</a>. Se guarda localmente en tu navegador.
+    </p>
+    <button class="btn nb" onclick="saveApiKey()"><span>&#128274; Guardar Clave</span></button>
+    <p style="font-size:10px;color:rgba(255,255,255,.25);margin-top:12px;text-align:center;">InnovaClubAI v2.0 &#8212; Powered by Gemini AI</p>
+  </div>
+</div>
+
+<!-- =========== DASHBOARD =========== -->
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-ring nb">
+      <div style="width:158px;height:158px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,rgba(157,0,255,.15),rgba(255,46,251,.1),rgba(46,139,255,.1));">
+        <span style="font-size:52px;">&#129302;</span>
+      </div>
+    </div>
+    <p class="hero-sub">An&#225;lisis Estrat&#233;gico con IA</p>
+  </div>
+
+  <!-- === SEC 1: DATOS === -->
+  <div class="sec nb glass" id="s-datos">
+    <div class="sec-title">&#128203; Datos de tu Empresa</div>
+
+    <div class="grp">
+      <label class="lbl" for="eEstado">Estado actual</label>
+      <select id="eEstado" class="sel">
+        <option value="">&#8212; Selecciona &#8212;</option>
+        <option value="idea">&#128161; Idea (no iniciada)</option>
+        <option value="proyecto">&#128640; Proyecto en desarrollo</option>
+        <option value="empresa">&#127970; Empresa Constituida</option>
+      </select>
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="eSector">Sector / Industria</label>
+      <input id="eSector" class="inp" type="text" placeholder="Restaurante, Tech, Moda, Salud...">
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="eModelo">Modelo de Negocio</label>
+      <select id="eModelo" class="sel">
+        <option value="">&#8212; Selecciona &#8212;</option>
+        <option value="B2C">B2C (Venta directa al consumidor)</option>
+        <option value="B2B">B2B (Venta a empresas)</option>
+        <option value="SaaS">SaaS (Software como servicio)</option>
+        <option value="Marketplace">Marketplace</option>
+        <option value="Freemium">Freemium</option>
+        <option value="Suscripcion">Suscripci&#243;n</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="ePresupuesto">Presupuesto / Inversi&#243;n</label>
+      <input id="ePresupuesto" class="inp" type="text" placeholder="Ej: $5,000 USD, Bootstrapping...">
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="ePublico">P&#250;blico Objetivo</label>
+      <input id="ePublico" class="inp" type="text" placeholder="J&#243;venes 18-35, empresarios, madres...">
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="eDiferenciacion">Diferenciaci&#243;n vs Competencia</label>
+      <input id="eDiferenciacion" class="inp" type="text" placeholder="&#191;Qu&#233; te hace &#250;nico?">
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="eDesc">Descripci&#243;n completa del proyecto</label>
+      <textarea id="eDesc" class="ta" placeholder="Propuesta de valor, servicios, modelo de negocio, diferenciadores, metas..."></textarea>
+    </div>
+
+    <div class="grp">
+      <label class="lbl">Logo de tu empresa (opcional)</label>
+      <label class="upl" id="uplArea" for="uplInput">
+        <div class="upl-ico">&#128444;</div>
+        <div class="upl-txt" id="uplTxt">Toca para subir tu logotipo</div>
+      </label>
+      <input type="file" id="uplInput" accept="image/*" style="display:none" onchange="onLogo(this)">
+      <img id="clientLogo" style="display:none;max-height:56px;margin-top:8px;border-radius:8px;" src="" alt="">
+    </div>
+
+    <div class="grp">
+      <label class="lbl" for="eInst">Instrucciones espec&#237;ficas</label>
+      <textarea id="eInst" class="ta" style="min-height:68px" placeholder="Enfoque, preferencias, restricciones del an&#225;lisis..."></textarea>
+    </div>
+
+    <button class="btn nb" id="btnAnalizar" onclick="doAnalysis()">
+      <span>&#9889; Analizar con InnovaClubAI</span>
+    </button>
+  </div>
+
+  <!-- === SEC 2: RADAR === -->
+  <div class="sec nb glass" id="s-radar">
+    <div class="sec-title">&#128225; Radar Geogr&#225;fico</div>
+    <div class="radar-wrap">
+      <svg viewBox="0 0 200 200">
+        <defs>
+          <radialGradient id="rg1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#9D00FF" stop-opacity=".15"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="sg1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#9D00FF" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#FF2EFB" stop-opacity=".75"/>
+          </linearGradient>
+          <filter id="gf">
+            <feGaussianBlur stdDeviation="2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(157,0,255,.22)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="68" fill="none" stroke="rgba(157,0,255,.16)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="46" fill="none" stroke="rgba(157,0,255,.16)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="24" fill="none" stroke="rgba(157,0,255,.22)" stroke-width="1"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(157,0,255,.11)" stroke-width="1"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="rgba(157,0,255,.11)" stroke-width="1"/>
+        <circle cx="100" cy="100" r="90" fill="url(#rg1)"/>
+        <g class="rsweep" filter="url(#gf)">
+          <path d="M100,100 L100,10 A90,90 0 0,1 163,37 Z" fill="url(#sg1)" opacity=".65"/>
+          <line x1="100" y1="100" x2="100" y2="12" stroke="#FF2EFB" stroke-width="2.2" opacity=".9"/>
+        </g>
+        <circle cx="132" cy="58" r="4" fill="#FF2EFB" filter="url(#gf)" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="68" cy="78" r="3" fill="#2E8BFF" filter="url(#gf)" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="1.1s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="152" cy="118" r="5" fill="#9D00FF" filter="url(#gf)" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="4s" begin="0.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="58" cy="142" r="3" fill="#FF2EFB" filter="url(#gf)" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3.4s" begin="1.6s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="100" cy="100" r="4.5" fill="#9D00FF"/>
+        <circle cx="100" cy="100" r="9" fill="none" stroke="rgba(157,0,255,.55)" stroke-width="1.2">
+          <animate attributeName="r" values="7;15;7" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+
+    <div class="grp" style="margin-top:12px;">
+      <label class="lbl" for="eUbi">Ubicaci&#243;n</label>
+      <input id="eUbi" class="inp" type="text" placeholder="Ciudad, Pa&#237;s o Regi&#243;n">
+    </div>
+
+    <div class="rctrl">
+      <button class="rbtn" onclick="setR(this,'200m')">200 m</button>
+      <button class="rbtn on" onclick="setR(this,'500m')">500 m</button>
+      <button class="rbtn" onclick="setR(this,'1km')">1 km</button>
+      <button class="rbtn" onclick="setR(this,'3km')">3 km</button>
+      <button class="rbtn" onclick="setR(this,'5km')">5 km</button>
+    </div>
+    <p style="text-align:center;font-size:11px;color:rgba(255,255,255,.32);margin:9px 0;font-weight:700;">
+      ALCANCE: <span id="rLbl" style="color:#2E8BFF;">500 m</span>
+    </p>
+    <button class="btn nb" id="btnScan" onclick="doScan()">
+      <span>&#128225; Escanear Radar Geogr&#225;fico</span>
+    </button>
+    <div id="radarOut"></div>
+  </div>
+
+  <!-- === SEC 3: ANALISIS === -->
+  <div class="sec" id="s-analisis">
+    <div id="analOut">
+      <div class="nb glass sec ph">
+        <div class="phi">&#128269;</div>
+        <p>Ejecuta el an&#225;lisis para ver el diagn&#243;stico completo aqu&#237;.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- === SEC 4: VIDEOS === -->
+  <div class="sec" id="s-videos">
+    <div id="vidOut">
+      <div class="nb glass sec ph">
+        <div class="phi">&#127916;</div>
+        <p>Las 3 propuestas de video aparecer&#225;n aqu&#237; tras el an&#225;lisis.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- === SEC 5: INNOVATORIO === -->
+  <div class="sec nb glass" id="s-innova">
+    <div class="sec-title">&#127942; Postulaci&#243;n al Innovatorio</div>
+
+    <div class="grp">
+      <label class="lbl" for="pNombre">Nombre del Fundador</label>
+      <input id="pNombre" class="inp" type="text" placeholder="Tu nombre completo">
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pNombreProyecto">Nombre del Proyecto</label>
+      <input id="pNombreProyecto" class="inp" type="text" placeholder="Nombre de tu startup/proyecto">
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pDescripcion">Descripci&#243;n del Proyecto</label>
+      <textarea id="pDescripcion" class="ta" placeholder="Describe tu proyecto, problema que resuelve, soluci&#243;n propuesta y mercado objetivo..."></textarea>
+    </div>
+
+    <div class="grp">
+      <label class="lbl">Par&#225;metros de Evaluaci&#243;n (12)</label>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pInovacion" style="font-size:10px;">1. Nivel de Innovaci&#243;n</label>
+      <select id="pInovacion" class="sel"><option value="Disruptiva">Disruptiva</option><option value="Incremental" selected>Incremental</option><option value="Baja">Baja</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pTecnologia" style="font-size:10px;">2. Tecnolog&#237;a Utilizada</label>
+      <select id="pTecnologia" class="sel"><option value="IA/ML">IA / Machine Learning</option><option value="Blockchain">Blockchain</option><option value="IoT">IoT</option><option value="Web/Mobile" selected>Web / Mobile</option><option value="Hardware">Hardware</option><option value="Otro">Otro</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pEscalabilidad" style="font-size:10px;">3. Escalabilidad</label>
+      <select id="pEscalabilidad" class="sel"><option value="Global">Global</option><option value="Regional" selected>Regional</option><option value="Local">Local</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pEquipo" style="font-size:10px;">4. Equipo Fundador</label>
+      <select id="pEquipo" class="sel"><option value="Completo (+3 personas)">Completo (+3)</option><option value="Parcial (2-3 personas)" selected>Parcial (2-3)</option><option value="Solo fundador">Solo fundador</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pPrototipo" style="font-size:10px;">5. Avance del Prototipo</label>
+      <select id="pPrototipo" class="sel"><option value="Producto terminado">Producto terminado</option><option value="MVP funcional" selected>MVP funcional</option><option value="Prototipo b&#225;sico">Prototipo b&#225;sico</option><option value="Solo concepto">Solo concepto</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pMercado" style="font-size:10px;">6. Mercado Objetivo</label>
+      <select id="pMercado" class="sel"><option value="Grande (+1M usuarios)">Grande (+1M)</option><option value="Mediano (100K-1M)" selected>Mediano (100K-1M)</option><option value="Nicho (<100K)">Nicho (&lt;100K)</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pIngresos" style="font-size:10px;">7. Modelo de Ingresos</label>
+      <select id="pIngresos" class="sel"><option value="Suscripci&#243;n recurrente" selected>Suscripci&#243;n</option><option value="Transaccional">Transaccional</option><option value="Publicidad">Publicidad</option><option value="Comisiones">Comisiones</option><option value="Licenciamiento">Licenciamiento</option><option value="A&#250;n no definido">A&#250;n no definido</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pPropiedad" style="font-size:10px;">8. Propiedad Intelectual</label>
+      <select id="pPropiedad" class="sel"><option value="Patente registrada">Patente registrada</option><option value="Marca registrada">Marca registrada</option><option value="En proceso" selected>En proceso</option><option value="Ninguna">Ninguna</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pESG" style="font-size:10px;">9. Sostenibilidad / ESG</label>
+      <select id="pESG" class="sel"><option value="Alto impacto social/ambiental">Alto impacto</option><option value="Impacto moderado" selected>Moderado</option><option value="Sin enfoque ESG">Sin enfoque</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pTraccion" style="font-size:10px;">10. Tracci&#243;n / Ventas</label>
+      <select id="pTraccion" class="sel"><option value="Ingresos constantes">Ingresos constantes</option><option value="Primeras ventas" selected>Primeras ventas</option><option value="Solo usuarios gratuitos">Solo usuarios gratuitos</option><option value="Sin tracci&#243;n">Sin tracci&#243;n</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pAdquisicion" style="font-size:10px;">11. Estrategia de Adquisici&#243;n</label>
+      <select id="pAdquisicion" class="sel"><option value="Marketing digital avanzado">Marketing digital</option><option value="Redes sociales org&#225;nicas" selected>Redes sociales</option><option value="Alianzas estrat&#233;gicas">Alianzas</option><option value="Sin estrategia definida">Sin estrategia</option></select>
+    </div>
+    <div class="grp">
+      <label class="lbl" for="pFinanciamiento" style="font-size:10px;">12. Financiamiento Requerido</label>
+      <select id="pFinanciamiento" class="sel"><option value="$0 - $10,000 USD">$0 - $10K</option><option value="$10,000 - $50,000 USD" selected>$10K - $50K</option><option value="$50,000 - $200,000 USD">$50K - $200K</option><option value="+$200,000 USD">+$200K</option></select>
+    </div>
+
+    <button class="btn nb" id="btnPostular" onclick="doEvaluate()" style="margin-top:14px;">
+      <span>&#127942; Postular al Innovatorio</span>
+    </button>
+    <div id="innovaOut"></div>
+  </div>
+
+  <!-- === SEC 6: SOLUCIONES === -->
+  <div class="sec" id="s-sol">
+    <div id="solOut">
+      <div class="nb glass sec ph">
+        <div class="phi">&#128161;</div>
+        <p>El paquete de soluciones estrat&#233;gicas aparecer&#225; aqu&#237; tras el an&#225;lisis.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:18px;"></div>
+</div><!-- /wrap -->
+
+<!-- =========== BOTTOM NAV =========== -->
+<div id="botNav">
+  <div class="ni on" onclick="go('s-datos',this)"><span class="ico">&#127968;</span><span>Inicio</span></div>
+  <div class="ni"    onclick="go('s-radar',this)"><span class="ico">&#128225;</span><span>Radar</span></div>
+  <div class="ni"    onclick="go('s-analisis',this)"><span class="ico">&#128202;</span><span>An&#225;lisis</span></div>
+  <div class="ni"    onclick="go('s-videos',this)"><span class="ico">&#127916;</span><span>Videos</span></div>
+  <div class="ni"    onclick="go('s-innova',this)"><span class="ico">&#127942;</span><span>Innova</span></div>
+  <div class="ni"    onclick="go('s-sol',this)"><span class="ico">&#128161;</span><span>Soluciones</span></div>
+</div>
+
+<script>
+/* ===== CLOCK ===== */
+function tick(){
+  var n=new Date();
+  var h=n.getHours().toString().padStart(2,'0');
+  var m=n.getMinutes().toString().padStart(2,'0');
+  document.getElementById('clk').textContent=h+':'+m;
+}
+tick(); setInterval(tick,30000);
+
+/* ===== SETTINGS ===== */
+function openSettings(){ document.getElementById('settingsModal').classList.add('show'); document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_api_key')||''; }
+function closeSettings(){ document.getElementById('settingsModal').classList.remove('show'); }
+function saveApiKey(){
+  var k=document.getElementById('apiKeyInput').value.trim();
+  if(k){ localStorage.setItem('gemini_api_key',k); closeSettings(); alert('Clave guardada correctamente.'); }
+  else{ alert('Por favor ingresa una clave v\u00E1lida.'); }
+}
+function getApiKey(){
+  var k=localStorage.getItem('gemini_api_key');
+  if(!k){ openSettings(); return null; }
+  return k;
+}
+
+/* ===== NAV ===== */
+function go(id,el){
+  var ni=document.querySelectorAll('.ni');
+  for(var i=0;i<ni.length;i++) ni[i].classList.remove('on');
+  if(el) el.classList.add('on');
+  var t=document.getElementById(id);
+  if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ===== LOGO UPLOAD ===== */
+function onLogo(inp){
+  if(inp.files&&inp.files[0]){
+    var r=new FileReader();
+    r.onload=function(e){
+      var img=document.getElementById('clientLogo');
+      img.src=e.target.result; img.style.display='block';
+      document.getElementById('uplTxt').textContent='\u2705 '+inp.files[0].name;
+    };
+    r.readAsDataURL(inp.files[0]);
+  }
+}
+
+/* ===== RADAR RANGE ===== */
+var curR='500m';
+function setR(btn,r){
+  curR=r;
+  document.getElementById('rLbl').textContent=r.replace('km',' km').replace('m',' m');
+  var btns=document.querySelectorAll('.rbtn');
+  for(var i=0;i<btns.length;i++) btns[i].classList.remove('on');
+  btn.classList.add('on');
+}
+
+/* ===== HELPERS ===== */
+function esc(s){ return s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';}
+function col(v){return v>74?'var(--p)':v>49?'var(--b)':'var(--k)';}
+
+function card(html){
+  return '<div class="nb glass sec">'+html+'</div>';
+}
+function stitle(icon,txt){
+  return '<div class="sec-title">'+icon+' '+txt+'</div>';
+}
+
+function loading(msg){
+  return '<div class="ldg"><div class="lring"></div><p class="ltxt">'+msg+'</p></div>';
+}
+
+/* ===== GEMINI AI FETCH (AI Studio Logic) ===== */
+async function ai(prompt){
+  var apiKey=getApiKey();
+  if(!apiKey) throw new Error('API Key no configurada. Haz clic en \u2699 para configurarla.');
+  try{
+    var res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+apiKey,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{parts:[{text:prompt}]}],
+        generationConfig:{
+          responseMimeType:"application/json",
+          temperature:0.2
+        }
+      })
+    });
+    var d=await res.json();
+    if(d.error) throw new Error(d.error.message||'Error de API');
+    var parts=d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts;
+    if(!parts||!parts.length) throw new Error('Respuesta vac\u00EDa de Gemini');
+    return parts[0].text||'{}';
+  } catch(e){
+    throw new Error('\u26A0\uFE0F Error: '+e.message);
+  }
+}
+
+/* ===== RADAR SCAN (AI Studio Logic: /api/scan) ===== */
+async function doScan(){
+  if(!getApiKey()) return;
+  var sector=document.getElementById('eSector').value||'negocios locales';
+  var ubi=document.getElementById('eUbi').value||'tu zona';
+  var btn=document.getElementById('btnScan');
+  btn.disabled=true;
+  document.getElementById('radarOut').innerHTML=loading('Escaneando '+curR+'...');
+
+  var prompt='Act\u00FAa como un experto en Inteligencia de Mercado, Geomarketing y An\u00E1lisis Competitivo Local.\n'+
+    'Escanea la ubicaci\u00F3n geogr\u00E1fica: "'+ubi+'" en un rango de "'+curR+'" para el sector: "'+sector+'".\n\n'+
+    'Identifica negocios competidores o socios clave del \u00E1rea (reales o perfiles de competidores arquet\u00EDpicos muy precisos de ese territorio) que operan en la zona.\n'+
+    'Genera un an\u00E1lisis de este radio de acci\u00F3n en formato JSON con la siguiente estructura exacta. No agregues texto antes ni despu\u00E9s del JSON.\n\n'+
+    '{\n'+
+    '  "negocios": [\n'+
+    '    {"nombre": "Nombre del negocio local", "tipo": "Tipo de establecimiento", "score": 88, "tendencia": "Alta Tracci\u00F3n / Moderada / Estable / En riesgo", "fortaleza": "Su mayor fortaleza", "op": "Tu oportunidad"},\n'+
+    '    {"nombre": "Segundo competidor", "tipo": "Tipo", "score": 65, "tendencia": "Estable", "fortaleza": "Precios bajos", "op": "Ganarles en calidad"},\n'+
+    '    {"nombre": "Tercer competidor", "tipo": "Tipo", "score": 45, "tendencia": "En declive", "fortaleza": "Operaci\u00F3n tradicional", "op": "Captar sus clientes digitalmente"},\n'+
+    '    {"nombre": "Cuarto negocio", "tipo": "Tipo", "score": 72, "tendencia": "Moderada", "fortaleza": "Ubicaci\u00F3n", "op": "Alianza estrat\u00E9gica"},\n'+
+    '    {"nombre": "Quinto negocio", "tipo": "Tipo", "score": 55, "tendencia": "Estable", "fortaleza": "Comunidad fiel", "op": "Diferenciaci\u00F3n digital"}\n'+
+    '  ],\n'+
+    '  "resumen": "An\u00E1lisis geopol\u00EDtico y demogr\u00E1fico del mercado de esta zona.",\n'+
+    '  "recomendacion": "Estrategia de localizaci\u00F3n definitiva para penetrar esta zona."\n'+
+    '}';
+
+  try{
+    var txt=await ai(prompt);
+    var data=JSON.parse(txt);
+    renderRadar(data);
+  } catch(e){ document.getElementById('radarOut').innerHTML=card('<p style="color:var(--k);font-size:12px;">'+esc(e.message)+'</p>'); }
+  btn.disabled=false;
+}
+
+function renderRadar(data){
+  var h=card(stitle('&#128202;','Negocios en Radio '+curR));
+  h=h.slice(0,-6);
+  (data.negocios||[]).forEach(function(n){
+    var c=col(n.score||50);
+    h+='<div style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'+
+      '<span style="font-size:13px;font-weight:800;color:#fff;">'+esc(n.nombre)+'</span>'+
+      '<span style="font-size:12px;font-weight:900;color:'+c+';">'+n.score+'<span style="font-size:9px;opacity:.55;">/100</span> '+(n.tendencia||'')+'</span>'+
+      '</div>'+
+      '<div style="font-size:11px;color:rgba(255,255,255,.38);margin-bottom:5px;">'+esc(n.tipo)+'</div>'+
+      '<div class="mbar"><div class="mfill" style="width:'+n.score+'%;background:linear-gradient(90deg,'+c+',rgba(255,255,255,.25));"></div></div>'+
+      '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px;">'+
+      '<span class="tag tag-p">&#128170; '+esc(n.fortaleza)+'</span>'+
+      '<span class="tag tag-b">&#127919; '+esc(n.op)+'</span>'+
+      '</div></div>';
+  });
+  if(data.resumen) h+='<p style="margin-top:11px;font-size:12px;color:rgba(255,255,255,.58);line-height:1.65;">'+esc(data.resumen)+'</p>';
+  if(data.recomendacion) h+='<div class="ibox ibox-p" style="margin-top:9px;"><div class="ilbl">&#9889; Recomendaci\u00F3n</div><p>'+esc(data.recomendacion)+'</p></div>';
+  h+='</div>';
+  document.getElementById('radarOut').innerHTML=h;
+}
+
+/* ===== FULL ANALYSIS (AI Studio Logic: /api/analyze) ===== */
+async function doAnalysis(){
+  if(!getApiKey()) return;
+  var estado=document.getElementById('eEstado').value;
+  var sector=document.getElementById('eSector').value;
+  var modelo=document.getElementById('eModelo').value;
+  var presupuesto=document.getElementById('ePresupuesto').value;
+  var publico=document.getElementById('ePublico').value;
+  var diferenciacion=document.getElementById('eDiferenciacion').value;
+  var desc=document.getElementById('eDesc').value;
+  var inst=document.getElementById('eInst').value;
+
+  if(!desc.trim()){alert('Por favor describe tu negocio antes de analizar.');return;}
+
+  var btn=document.getElementById('btnAnalizar');
+  btn.disabled=true;
+
+  document.getElementById('analOut').innerHTML=loading('Analizando negocio con IA...');
+  document.getElementById('vidOut').innerHTML=loading('Preparando propuestas de video...');
+  document.getElementById('solOut').innerHTML=loading('Generando estrategias...');
+
+  document.getElementById('s-analisis').scrollIntoView({behavior:'smooth',block:'start'});
+  var navItems=document.querySelectorAll('.ni');
+  for(var i=0;i<navItems.length;i++) navItems[i].classList.remove('on');
+  navItems[2].classList.add('on');
+
+  var prompt='Act\u00FAa como un Consultor Estrat\u00E9gico de Negocios e Inteligencia Artificial de primer nivel.\n'+
+    'Analiza con absoluto rigor y realismo este negocio.\n\n'+
+    'DATOS DE LA EMPRESA:\n'+
+    '- Estado del negocio: '+(estado||'No especificado')+'\n'+
+    '- Sector / Industria: '+(sector||'No especificado')+'\n'+
+    '- Modelo de negocio: '+(modelo||'No especificado')+'\n'+
+    '- Presupuesto / Inversi\u00F3n disponible: '+(presupuesto||'No especificado')+'\n'+
+    '- P\u00FAblico objetivo principal: '+(publico||'No especificado')+'\n'+
+    '- Diferenciaci\u00F3n vs competencia: '+(diferenciacion||'No especificado')+'\n'+
+    '- Descripci\u00F3n del proyecto: '+desc+'\n'+
+    '- Instrucciones adicionales espec\u00EDficas: '+(inst||'Ninguna')+'\n\n'+
+    'Genera un informe estrat\u00E9gico ultra detallado en formato JSON estructurado con las siguientes propiedades. No agregues texto antes ni despu\u00E9s del JSON.\n\n'+
+    'Estructura de respuesta requerida:\n'+
+    '{\n'+
+    '  "resumen": "Resumen ejecutivo profundo del negocio (3-4 frases).",\n'+
+    '  "score": 75,\n'+
+    '  "madurez": {"nivel": "Idea|MVP|Proyecto|Empresa", "desc": "An\u00E1lisis del nivel de madurez."},\n'+
+    '  "dafo": {"F": ["Fortaleza 1","Fortaleza 2","Fortaleza 3","Fortaleza 4"], "D": ["Debilidad 1","Debilidad 2","Debilidad 3","Debilidad 4"], "O": ["Oportunidad 1","Oportunidad 2","Oportunidad 3","Oportunidad 4"], "A": ["Amenaza 1","Amenaza 2","Amenaza 3","Amenaza 4"]},\n'+
+    '  "publico": {"perfil": "An\u00E1lisis del segmento.", "edades": "Rango de edades", "comportamiento": "Patr\u00F3n de consumo.", "canales": ["Canal 1","Canal 2","Canal 3"]},\n'+
+    '  "posicion": {"valor": "Propuesta de valor \u00FAnica.", "ventaja": "Ventaja competitiva sostenible.", "nicho": "Nicho de mercado espec\u00EDfico."},\n'+
+    '  "metricas": [{"n":"Potencial de Mercado","v":"Alto/Medio/Bajo","p":85},{"n":"Diferenciaci\u00F3n","v":"Clara/Media/Baja","p":60},{"n":"Viabilidad Financiera","v":"Alta/Media/Baja","p":70},{"n":"Facilidad de Escalado","v":"Alta/Media/Baja","p":65}],\n'+
+    '  "competidores": [{"nombre":"Competidor 1","tipo":"Directo/Indirecto","F":"Su fortaleza","D":"Su debilidad","op":"Tu oportunidad"},{"nombre":"Competidor 2","tipo":"Directo/Indirecto","F":"...","D":"...","op":"..."},{"nombre":"Competidor 3","tipo":"Directo/Indirecto","F":"...","D":"...","op":"..."}],\n'+
+    '  "videos": [\n'+
+    '    {"titulo":"T\u00EDtulo Gancho 1","tipo":"Promocional/Educativo/Storytelling/Viral","duracion":"30 segundos","audio":"M\u00FAsica recomendada","guion":[{"segundos":"0-10","visual":"Escena inicial","narracion":"Voz en off: gancho"},{"segundos":"10-20","visual":"Desarrollo","narracion":"Voz en off: soluci\u00F3n"},{"segundos":"20-30","visual":"CTA","narracion":"Voz en off: cierre"}],"consejo":"Consejo t\u00E9cnico"},\n'+
+    '    {"titulo":"T\u00EDtulo Gancho 2","tipo":"Storytelling/Viral","duracion":"30 segundos","audio":"M\u00FAsica tendencia","guion":[{"segundos":"0-10","visual":"Intriga","narracion":"Gancho"},{"segundos":"10-20","visual":"Desarrollo","narracion":"Mensaje"},{"segundos":"20-30","visual":"Cierre","narracion":"CTA"}],"consejo":"Consejo"},\n'+
+    '    {"titulo":"T\u00EDtulo Gancho 3","tipo":"Educativo/Demostraci\u00F3n","duracion":"30 segundos","audio":"M\u00FAsica inspiradora","guion":[{"segundos":"0-10","visual":"Dolor del cliente","narracion":"Problema"},{"segundos":"10-20","visual":"Tu soluci\u00F3n","narracion":"Soluci\u00F3n"},{"segundos":"20-30","visual":"Logo y cierre","narracion":"CTA"}],"consejo":"Consejo"}\n'+
+    '  ],\n'+
+    '  "acciones": [{"n":1,"t":"Acci\u00F3n 1","d":"descripci\u00F3n ejecutable"},{"n":2,"t":"Acci\u00F3n 2","d":"..."},{"n":3,"t":"Acci\u00F3n 3","d":"..."},{"n":4,"t":"Acci\u00F3n 4","d":"..."},{"n":5,"t":"Acci\u00F3n 5","d":"..."}],\n'+
+    '  "medio": ["estrategia 3-6 meses 1","estrategia 2","estrategia 3"],\n'+
+    '  "largo": ["visi\u00F3n 12+ meses 1","visi\u00F3n 2","visi\u00F3n 3"],\n'+
+    '  "conclusion": "P\u00E1rrafo final motivador personalizado."\n'+
+    '}';
+
+  try{
+    var txt=await ai(prompt);
+    var data=JSON.parse(txt);
+    renderAnalysis(data);
+    renderVideos(data.videos||[]);
+    renderSol(data);
+  } catch(e){
+    document.getElementById('analOut').innerHTML=card('<p style="color:var(--k);font-size:12px;">'+esc(e.message)+'</p>');
+    document.getElementById('vidOut').innerHTML='';
+    document.getElementById('solOut').innerHTML='';
+  }
+  btn.disabled=false;
+}
+
+/* ===== RENDER ANALYSIS ===== */
+function renderAnalysis(d){
+  var h='';
+
+  var bClass=d.madurez&&d.madurez.nivel==='Idea'?'badge-I':d.madurez&&(d.madurez.nivel==='Proyecto'||d.madurez.nivel==='MVP')?'badge-P':'badge-E';
+  var bIcon=d.madurez&&d.madurez.nivel==='Idea'?'&#128161;':d.madurez&&(d.madurez.nivel==='Proyecto'||d.madurez.nivel==='MVP')?'&#128640;':'&#127970;';
+  var sc=d.score||75;
+  h+=card(
+    stitle('&#128269;','Diagn\u00F3stico Empresarial')+
+    '<span class="badge '+bClass+'">'+bIcon+' '+(d.madurez&&d.madurez.nivel||'').toUpperCase()+' \u2014 Score '+sc+'/100</span>'+
+    '<p style="font-size:12px;color:rgba(255,255,255,.58);margin-bottom:10px;line-height:1.65;">'+(d.madurez&&esc(d.madurez.desc)||'')+'</p>'+
+    (d.resumen?'<p style="font-size:13px;color:var(--g);line-height:1.65;border-top:1px solid rgba(255,255,255,.07);padding-top:10px;">'+esc(d.resumen)+'</p>':'')+
+    (d.metricas||[]).map(function(m){
+      return '<div class="mrow"><div><div class="mlbl">'+esc(m.n)+'</div><div class="mbar"><div class="mfill" style="width:'+m.p+'%;"></div></div></div>'+
+        '<div class="mval" style="color:'+col(m.p)+';">'+esc(m.v)+'</div></div>';
+    }).join('')
+  );
+
+  if(d.dafo){
+    h+=card(stitle('&#9889;','An\u00E1lisis DAFO')+
+      '<div class="swot">'+
+      '<div class="swot-card sw-F"><div class="sw-lbl">&#128170; Fortalezas</div>'+(d.dafo.F||[]).map(function(x){return '<div class="sw-li">'+esc(x)+'</div>';}).join('')+'</div>'+
+      '<div class="swot-card sw-D"><div class="sw-lbl">&#9888; Debilidades</div>'+(d.dafo.D||[]).map(function(x){return '<div class="sw-li">'+esc(x)+'</div>';}).join('')+'</div>'+
+      '<div class="swot-card sw-O"><div class="sw-lbl">&#128640; Oportunidades</div>'+(d.dafo.O||[]).map(function(x){return '<div class="sw-li">'+esc(x)+'</div>';}).join('')+'</div>'+
+      '<div class="swot-card sw-A"><div class="sw-lbl">&#128293; Amenazas</div>'+(d.dafo.A||[]).map(function(x){return '<div class="sw-li">'+esc(x)+'</div>';}).join('')+'</div>'+
+      '</div>'
+    );
+  }
+
+  if(d.publico){
+    h+=card(stitle('&#128101;','P\u00FAblico Objetivo')+
+      '<span class="tag tag-b">Edad: '+esc(d.publico.edades)+'</span>'+
+      '<div class="ibox ibox-p" style="margin-top:9px;"><div class="ilbl">Perfil</div><p>'+esc(d.publico.perfil)+'</p></div>'+
+      '<div class="ibox ibox-b"><div class="ilbl">Comportamiento</div><p>'+esc(d.publico.comportamiento)+'</p></div>'+
+      '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px;">'+(d.publico.canales||[]).map(function(c){return '<span class="tag tag-k">&#128241; '+esc(c)+'</span>';}).join('')+'</div>'
+    );
+  }
+
+  if(d.posicion){
+    h+=card(stitle('&#127919;','Posicionamiento')+
+      '<div class="ibox ibox-p"><div class="ilbl">Propuesta de Valor</div><p>'+esc(d.posicion.valor)+'</p></div>'+
+      '<div class="ibox ibox-b"><div class="ilbl">Ventaja Competitiva</div><p>'+esc(d.posicion.ventaja)+'</p></div>'+
+      '<div class="ibox ibox-k"><div class="ilbl">Nicho Estrat\u00E9gico</div><p>'+esc(d.posicion.nicho)+'</p></div>'
+    );
+  }
+
+  if(d.competidores){
+    h+=card(stitle('&#127937;','An\u00E1lisis Competitivo')+
+      '<div style="overflow-x:auto;"><table class="ctbl">'+
+      '<thead><tr><th>Competidor</th><th>Tipo</th><th>Fortaleza</th><th>Tu Oportunidad</th></tr></thead>'+
+      '<tbody>'+(d.competidores||[]).map(function(c){
+        return '<tr>'+
+          '<td style="color:#fff;font-weight:800;">'+esc(c.nombre)+'</td>'+
+          '<td><span class="tag '+(c.tipo==='Directo'||c.tipo==='directo'?'tag-k':'tag-b')+'">'+esc(c.tipo)+'</span></td>'+
+          '<td>'+esc(c.F)+'</td>'+
+          '<td style="color:var(--b);">'+esc(c.op)+'</td>'+
+          '</tr>';
+      }).join('')+
+      '</tbody></table></div>'
+    );
+  }
+
+  if(d.conclusion){
+    h+=card(stitle('&#11088;','Recomendaci\u00F3n Final')+
+      '<p style="font-size:13px;color:var(--g);line-height:1.7;">'+esc(d.conclusion)+'</p>'
+    );
+  }
+
+  document.getElementById('analOut').innerHTML=h;
+}
+
+/* ===== RENDER VIDEOS ===== */
+function renderVideos(videos){
+  if(!videos||!videos.length){document.getElementById('vidOut').innerHTML='';return;}
+  var h='';
+  videos.forEach(function(v,idx){
+    h+='<div class="vcard nb">'+
+      '<div class="vnum">&#9654; VIDEO '+(idx+1)+' \u2014 '+(v.titulo||'').toUpperCase()+'</div>'+
+      '<p style="font-size:11px;color:rgba(255,255,255,.38);margin-bottom:4px;"><span class="tag tag-b">'+esc(v.tipo)+'</span> <span class="tag tag-p">'+esc(v.duracion)+'</span></p>'+
+      '<p style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:11px;">&#127925; '+esc(v.audio)+'</p>'+
+      '<div class="vtl">';
+    (v.guion||[]).forEach(function(s,i){
+      h+='<div class="vrow">'+
+        '<div class="vtime">'+esc(s.segundos)+'</div>'+
+        '<div class="vtxt">'+
+        '<div style="color:var(--k);font-size:11px;font-weight:800;margin-bottom:2px;">&#127910; '+esc(s.visual)+'</div>'+
+        '<div style="margin-bottom:2px;"><em>"'+esc(s.narracion)+'"</em></div>'+
+        '</div></div>';
+      if(i<(v.guion.length-1)) h+='<div style="width:1px;height:14px;background:linear-gradient(180deg,var(--p),var(--b));margin-left:19px;"></div>';
+    });
+    h+='</div>';
+    if(v.consejo) h+='<div class="ibox ibox-b" style="margin-top:10px;"><div class="ilbl">&#128161; Consejo</div><p style="font-size:11px;">'+esc(v.consejo)+'</p></div>';
+    h+='</div>';
+  });
+  h+='<div class="nb glass sec" style="margin-top:0;">'+
+    stitle('&#127912;','Recursos Visuales Libres')+
+    '<a href="https://www.pexels.com" target="_blank" class="rlink" style="margin-bottom:7px;">&#128247; Pexels \u2014 Fotos y Videos HD</a>'+
+    '<a href="https://pixabay.com" target="_blank" class="rlink" style="margin-bottom:7px;">&#128444; Pixabay \u2014 Im\u00E1genes gratuitas</a>'+
+    '<a href="https://unsplash.com" target="_blank" class="rlink">&#10024; Unsplash \u2014 Fotograf\u00EDa premium</a>'+
+    '</div>';
+  document.getElementById('vidOut').innerHTML=h;
+}
+
+/* ===== RENDER SOLUCIONES ===== */
+function renderSol(d){
+  var h='';
+
+  h+=card(stitle('&#9889;','Acciones Inmediatas \u2014 72 horas')+
+    (d.acciones||[]).map(function(a){
+      return '<div class="step">'+
+        '<div class="snum">'+a.n+'</div>'+
+        '<div class="stxt"><h4>'+esc(a.t)+'</h4><p>'+esc(a.d)+'</p></div>'+
+        '</div>';
+    }).join('')
+  );
+
+  h+=card(stitle('&#128200;','Estrategia Mediano Plazo (3-6 meses)')+
+    (d.medio||[]).map(function(e,i){
+      return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);">'+
+        '<span style="color:var(--b);font-weight:900;font-size:11px;flex-shrink:0;padding-top:2px;">0'+(i+1)+'</span>'+
+        '<p style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.5;">'+esc(e)+'</p></div>';
+    }).join('')
+  );
+
+  h+=card(stitle('&#11088;','Visi\u00F3n Largo Plazo (12+ meses)')+
+    (d.largo||[]).map(function(e,i){
+      return '<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);">'+
+        '<span style="color:var(--p);font-weight:900;font-size:11px;flex-shrink:0;padding-top:2px;">0'+(i+1)+'</span>'+
+        '<p style="font-size:13px;color:rgba(255,255,255,.72);line-height:1.5;">'+esc(e)+'</p></div>';
+    }).join('')
+  );
+
+  h+=card(stitle('&#127916;','Paquete de Videos Incluido')+
+    '<p style="font-size:12px;color:rgba(255,255,255,.45);margin-bottom:11px;">3 propuestas de video personalizadas.</p>'+
+    '<button class="btn2" onclick="go(\'s-videos\',document.querySelectorAll(\'.ni\')[3])">Ver Guiones de Video &rarr;</button>'
+  );
+
+  document.getElementById('solOut').innerHTML=h;
+}
+
+/* ===== INNOVATORIO EVALUATION (AI Studio Logic: /api/evaluate-project) ===== */
+async function doEvaluate(){
+  if(!getApiKey()) return;
+  var pNombre=document.getElementById('pNombre').value;
+  var pNombreProyecto=document.getElementById('pNombreProyecto').value;
+  var pDescripcion=document.getElementById('pDescripcion').value;
+
+  if(!pDescripcion.trim()){alert('La descripci\u00F3n del proyecto es obligatoria para la postulaci\u00F3n.');return;}
+
+  var pInovacion=document.getElementById('pInovacion').value;
+  var pTecnologia=document.getElementById('pTecnologia').value;
+  var pEscalabilidad=document.getElementById('pEscalabilidad').value;
+  var pEquipo=document.getElementById('pEquipo').value;
+  var pPrototipo=document.getElementById('pPrototipo').value;
+  var pMercado=document.getElementById('pMercado').value;
+  var pIngresos=document.getElementById('pIngresos').value;
+  var pPropiedad=document.getElementById('pPropiedad').value;
+  var pESG=document.getElementById('pESG').value;
+  var pTraccion=document.getElementById('pTraccion').value;
+  var pAdquisicion=document.getElementById('pAdquisicion').value;
+  var pFinanciamiento=document.getElementById('pFinanciamiento').value;
+
+  var btn=document.getElementById('btnPostular');
+  btn.disabled=true;
+  document.getElementById('innovaOut').innerHTML=loading('Evaluando postulaci\u00F3n al Innovatorio...');
+
+  var prompt='Eres el Comit\u00E9 Evaluador Cient\u00EDfico y de Inversi\u00F3n del programa "Innovatorio", organizado por Innovaclub.\n'+
+    'Tu misi\u00F3n es evaluar el proyecto postulante bas\u00E1ndote estrictamente en los 12 par\u00E1metros de evaluaci\u00F3n proporcionados, calcular un porcentaje real de avance y aceptaci\u00F3n, estructurar la estrategia exacta con el acompa\u00F1amiento de Innovaclub y dise\u00F1ar el "Paquete de Soluciones Estrat\u00E9gicas INNOVACLUB AI" con las herramientas tecnol\u00F3gicas recomendadas para su plataforma.\n\n'+
+    'DATOS DEL POSTULANTE:\n'+
+    '- Nombre del Fundador: '+(pNombre||'No especificado')+'\n'+
+    '- Nombre del Proyecto: '+(pNombreProyecto||'No especificado')+'\n'+
+    '- Descripci\u00F3n del Proyecto: '+pDescripcion+'\n\n'+
+    'PAR\u00C1METROS SELECCIONADOS (12):\n'+
+    '1. Nivel de Innovaci\u00F3n: '+pInovacion+'\n'+
+    '2. Tecnolog\u00EDa Utilizada: '+pTecnologia+'\n'+
+    '3. Escalabilidad del Proyecto: '+pEscalabilidad+'\n'+
+    '4. Equipo Fundador: '+pEquipo+'\n'+
+    '5. Maturity / Avance del Prototipo: '+pPrototipo+'\n'+
+    '6. Mercado Objetivo / Tama\u00F1o: '+pMercado+'\n'+
+    '7. Modelo de Ingresos: '+pIngresos+'\n'+
+    '8. Propiedad Intelectual / Barreras: '+pPropiedad+'\n'+
+    '9. Sostenibilidad / ESG: '+pESG+'\n'+
+    '10. Tracci\u00F3n o Ventas Iniciales: '+pTraccion+'\n'+
+    '11. Estrategia de Adquisici\u00F3n: '+pAdquisicion+'\n'+
+    '12. Monto de Financiamiento Requerido: '+pFinanciamiento+'\n\n'+
+    'Realiza un an\u00E1lisis riguroso y genera una respuesta exclusivamente en JSON sin a\u00F1adir c\u00F3digo de formato extra.\n\n'+
+    'Estructura de respuesta requerida:\n'+
+    '{\n'+
+    '  "porcentajeAvance": 78,\n'+
+    '  "aprobado": true,\n'+
+    '  "analisisPorParametro": [\n'+
+    '    {"parametro": "Nivel de Innovaci\u00F3n", "calificacion": "8/10", "comentario": "Comentario espec\u00EDfico."},\n'+
+    '    {"parametro": "Tecnolog\u00EDa Utilizada", "calificacion": "7/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Escalabilidad del Proyecto", "calificacion": "8/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Equipo Fundador", "calificacion": "9/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Maturity / Prototipo", "calificacion": "6/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Mercado Objetivo", "calificacion": "8/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Modelo de Ingresos", "calificacion": "7/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Propiedad Intelectual", "calificacion": "5/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Sostenibilidad / ESG", "calificacion": "8/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Tracci\u00F3n / Ventas", "calificacion": "4/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Estrategia de Adquisici\u00F3n", "calificacion": "6/10", "comentario": "Comentario..."},\n'+
+    '    {"parametro": "Plan de Financiamiento", "calificacion": "7/10", "comentario": "Comentario..."}\n'+
+    '  ],\n'+
+    '  "diagnosticoComite": "Opini\u00F3n oficial detallada del comit\u00E9 evaluador.",\n'+
+    '  "estrategiaAcompaniamiento": {\n'+
+    '    "objetivoParaMinimo": "Qu\u00E9 se necesita para llegar al 85% de avance.",\n'+
+    '    "fases": [\n'+
+    '      {"fase": "Fase 1: Validaci\u00F3n y Ajuste Tecnol\u00F3gico", "desc": "Plan de acci\u00F3n con mentores."},\n'+
+    '      {"fase": "Fase 2: Estructuraci\u00F3n y Tracci\u00F3n", "desc": "Pasos metodol\u00F3gicos."},\n'+
+    '      {"fase": "Fase 3: Alistamiento Financiero", "desc": "Preparaci\u00F3n para rondas de inversi\u00F3n."}\n'+
+    '    ]\n'+
+    '  },\n'+
+    '  "paqueteSolucionesAI": {\n'+
+    '    "titulo": "Paquete de Soluciones Estrat\u00E9gicas INNOVACLUB AI",\n'+
+    '    "descripcion": "An\u00E1lisis de necesidades de automatizaci\u00F3n y herramientas de IA.",\n'+
+    '    "herramientasRecomendadas": [\n'+
+    '      {"nombre": "Herramienta 1", "tipo": "IA / Infraestructura", "paraQueSirve": "Aplicaci\u00F3n directa.", "beneficioEstimado": "Ahorro del 40%."},\n'+
+    '      {"nombre": "Herramienta 2", "tipo": "Automatizaci\u00F3n o CRM", "paraQueSirve": "Aplicaci\u00F3n.", "beneficioEstimado": "Multiplicaci\u00F3n comercial."},\n'+
+    '      {"nombre": "Herramienta 3", "tipo": "An\u00E1lisis / No-Code", "paraQueSirve": "Aplicaci\u00F3n.", "beneficioEstimado": "70% m\u00E1s r\u00E1pido."}\n'+
+    '    ]\n'+
+    '  }\n'+
+    '}\n\n'+
+    'Nota: Calcula el porcentajeAvance de manera ponderada. Si es >= 80, pon aprobado en true, de lo contrario false.';
+
+  try{
+    var txt=await ai(prompt);
+    var data=JSON.parse(txt);
+    renderEvaluation(data);
+  } catch(e){ document.getElementById('innovaOut').innerHTML=card('<p style="color:var(--k);font-size:12px;">'+esc(e.message)+'</p>'); }
+  btn.disabled=false;
+}
+
+/* ===== RENDER EVALUATION ===== */
+function renderEvaluation(d){
+  var pct=d.porcentajeAvance||0;
+  var approved=d.aprobado;
+  var progClass=pct>=80?'green':pct>=50?'yellow':'red';
+
+  var h='';
+
+  /* Status */
+  var statusColor=approved?'rgba(0,200,83,.12)':'rgba(255,46,251,.08)';
+  var statusBorder=approved?'rgba(0,200,83,.4)':'rgba(255,46,251,.35)';
+  var statusText=approved?'&#9989; \u00A1FELICIDADES! Proyecto APROBADO para el programa "Innovatorio".':'&#9888; Estado: No admitido de inmediato. Necesitas m\u00EDnimo el 80%.';
+  var statusTextColor=approved?'#69f0ae':'var(--k)';
+
+  h+=card(
+    stitle('&#127942;','Resultado de Evaluaci\u00F3n')+
+    '<div style="padding:14px;border-radius:12px;background:'+statusColor+';border:1px solid '+statusBorder+';text-align:center;margin-bottom:14px;">'+
+    '<p style="font-size:13px;font-weight:900;color:'+statusTextColor+';">'+statusText+'</p>'+
+    '</div>'+
+    '<div style="text-align:center;margin-bottom:10px;">'+
+    '<span style="font-size:36px;font-weight:900;color:'+statusTextColor+';">'+pct+'%</span>'+
+    '<p style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Porcentaje de Avance</p>'+
+    '</div>'+
+    '<div class="prog-bar"><div class="prog-fill '+progClass+'" style="width:'+pct+'%;"></div></div>'
+  );
+
+  /* Analysis by parameter */
+  if(d.analisisPorParametro){
+    h+=card(stitle('&#128203;','An\u00E1lisis por Par\u00E1metro')+
+      d.analisisPorParametro.map(function(p){
+        return '<div class="eval-param">'+
+          '<div class="ep-head"><span class="ep-name">'+esc(p.parametro)+'</span><span class="ep-score">'+esc(p.calificacion)+'</span></div>'+
+          '<div class="ep-comment">'+esc(p.comentario)+'</div>'+
+          '</div>';
+      }).join('')
+    );
+  }
+
+  /* Committee Diagnosis */
+  if(d.diagnosticoComite){
+    h+=card(stitle('&#128220;','Diagn\u00F3stico del Comit\u00E9')+
+      '<p style="font-size:13px;color:var(--g);line-height:1.7;">'+esc(d.diagnosticoComite)+'</p>'
+    );
+  }
+
+  /* Accompaniment Strategy */
+  if(d.estrategiaAcompaniamiento){
+    var ea=d.estrategiaAcompaniamiento;
+    h+=card(stitle('&#128640;','Estrategia de Acompa\u00F1amiento')+
+      '<div class="ibox ibox-p"><div class="ilbl">Objetivo</div><p>'+esc(ea.objetivoParaMinimo)+'</p></div>'+
+      (ea.fases||[]).map(function(f,i){
+        return '<div class="step">'+
+          '<div class="snum">'+(i+1)+'</div>'+
+          '<div class="stxt"><h4>'+esc(f.fase)+'</h4><p>'+esc(f.desc)+'</p></div>'+
+          '</div>';
+      }).join('')
+    );
+  }
+
+  /* AI Solutions Package */
+  if(d.paqueteSolucionesAI){
+    var pk=d.paqueteSolucionesAI;
+    h+=card(stitle('&#129302;',esc(pk.titulo||'Paquete Soluciones AI'))+
+      '<p style="font-size:12px;color:rgba(255,255,255,.55);margin-bottom:12px;line-height:1.5;">'+esc(pk.descripcion)+'</p>'+
+      (pk.herramientasRecomendadas||[]).map(function(tool){
+        return '<div class="ibox ibox-b" style="margin-bottom:10px;">'+
+          '<div class="ilbl">'+esc(tool.nombre)+' <span class="tag tag-p" style="font-size:9px;">'+esc(tool.tipo)+'</span></div>'+
+          '<p style="margin-bottom:4px;">'+esc(tool.paraQueSirve)+'</p>'+
+          '<p style="font-size:11px;color:var(--p);font-weight:800;">&#9889; '+esc(tool.beneficioEstimado)+'</p>'+
+          '</div>';
+      }).join('')
+    );
+  }
+
+  document.getElementById('innovaOut').innerHTML=h;
+}
+</script>
+</body>
+</html>
