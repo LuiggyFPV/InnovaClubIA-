@@ -491,24 +491,38 @@ function stitle(icon,txt){
 }
 
 /* ===== AI FETCH ===== */
+/*
+ * SECURITY NOTE: This standalone HTML version uses a local simulation mode.
+ * Direct client-side API calls to AI providers (Anthropic, OpenAI, etc.)
+ * would expose API keys in the browser — NEVER embed API keys in client-side code.
+ * For the full AI-powered experience, use the server-hosted React app which
+ * routes requests through the secure backend (server.ts).
+ */
 async function ai(prompt, maxTok){
   maxTok = maxTok||3500;
-  try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:maxTok,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    var d=await res.json();
-    if(d.error) return '\u26A0\uFE0F Error: '+d.error.message;
-    return (d.content||[]).map(function(b){return b.text||'';}).join('');
-  } catch(e){
-    return '\u26A0\uFE0F Error de conexi\u00F3n: '+e.message;
-  }
+  // Return a simulated response for the offline/standalone version.
+  // The live AI-powered version requires the server backend (npm run dev).
+  return JSON.stringify({
+    "negocios": [
+      {"nombre": "Negocio Ejemplo 1", "tipo": "Competidor directo", "score": 82, "tendencia": "Alta Tracción", "fortaleza": "Buena ubicación", "op": "Alianza estratégica"},
+      {"nombre": "Negocio Ejemplo 2", "tipo": "Complementario", "score": 68, "tendencia": "Estable", "fortaleza": "Precios competitivos", "op": "Diferenciación por calidad"},
+      {"nombre": "Negocio Ejemplo 3", "tipo": "Indirecto", "score": 55, "tendencia": "En declive", "fortaleza": "Marca conocida", "op": "Captar clientes insatisfechos"}
+    ],
+    "resumen": "Zona con densidad media de competidores. Oportunidad clara de diferenciación mediante tecnología y experiencia de usuario.",
+    "recomendacion": "Enfocarse en marketing digital y alianzas locales para penetrar el mercado rápidamente.",
+    "score": 78,
+    "madurez": {"nivel": "proyecto", "desc": "El proyecto muestra potencial significativo. Se recomienda validación de mercado.", "score": 78},
+    "dafo": {"F": ["Innovación tecnológica", "Equipo dedicado", "Propuesta diferenciada", "Costo competitivo"], "D": ["Falta de tracción", "Presupuesto limitado", "Sin marca establecida", "Equipo pequeño"], "O": ["Mercado en crecimiento", "Poca competencia digital", "Tendencia favorable", "Alianzas posibles"], "A": ["Competidores grandes", "Regulación cambiante", "Incertidumbre económica", "Cambios tecnológicos"]},
+    "publico": {"perfil": "Profesionales jóvenes interesados en innovación", "edades": "25-40 años", "comportamiento": "Activos en redes sociales, buscan soluciones digitales", "canales": ["Instagram", "LinkedIn", "Google Ads"]},
+    "posicion": {"valor": "Solución integral con IA para decisiones estratégicas", "ventaja": "Automatización inteligente de análisis de mercado", "nicho": "PYMEs tecnológicas en Latinoamérica"},
+    "metricas": [{"n": "Potencial Mercado", "v": "Alto", "p": 80}, {"n": "Diferenciación", "v": "Media-Alta", "p": 70}, {"n": "Viabilidad", "v": "Alta", "p": 75}, {"n": "Crecimiento", "v": "Medio", "p": 60}],
+    "competidores": [{"nombre": "Competidor A", "tipo": "directo", "F": "Recursos financieros", "D": "Lentitud de innovación", "op": "Agilidad en desarrollo"}, {"nombre": "Competidor B", "tipo": "indirecto", "F": "Base de usuarios", "D": "Interfaz obsoleta", "op": "UX superior"}],
+    "acciones": [{"n": 1, "t": "Validar MVP", "d": "Lanzar prueba con 50 usuarios beta"}, {"n": 2, "t": "Marketing Digital", "d": "Campaña en redes sociales"}, {"n": 3, "t": "Alianzas", "d": "Contactar 3 posibles socios estratégicos"}],
+    "medio": ["Expandir a 3 ciudades principales", "Implementar modelo de suscripción", "Contratar equipo de ventas"],
+    "largo": ["Presencia regional en 5 países", "Ronda de inversión Serie A", "Plataforma con +10,000 usuarios activos"],
+    "videos": [{"num": 1, "titulo": "Gancho Emocional", "concepto": "Muestra el problema que resuelves", "segs": [{"t": "0-5s", "d": "Gancho visual", "msg": "¿Tu negocio necesita IA?", "vis": "Primer plano"}], "musica": "Inspiradora", "tono": "Motivador", "q": "business innovation"}],
+    "conclusion": "Este proyecto tiene un potencial significativo. Con las acciones recomendadas, puede alcanzar tracción real en 90 días."
+  });
 }
 
 function loading(msg){
